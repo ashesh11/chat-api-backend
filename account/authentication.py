@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 
-from account.services import UserAccountServices
+from account.services.account import UserAccountServices
 
 
 class AccountJWTAuthentication(BaseAuthentication):

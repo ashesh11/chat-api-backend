@@ -1,6 +1,7 @@
 from django.urls import path
 
-from account.views import *
+from account.views.account import *
+from account.views.token import RefreshTokenView
 
 urlpatterns = [
     path("signup/", UserSignupView.as_view(), name="user-signup"),

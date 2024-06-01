@@ -1,4 +1,4 @@
-from account.models import UserAccount
+from account.models.account import UserAccount
 
 class UserAccountServices:
     @staticmethod
@@ -22,3 +22,5 @@ class UserAccountServices:
             return user, None
         except Exception as e:
             return None, {"errors": f"User retrieval failed. {e}"}
+        
+
