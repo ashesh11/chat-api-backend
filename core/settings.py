@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "rest_framework",
 
     # Project apps
-    "account"
+    "account",
+    "chat"
 ]
 
 MIDDLEWARE = [
