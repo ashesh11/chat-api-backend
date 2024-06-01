@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # 3rd party apps
+    "rest_framework",
+
+    # Project apps
     "account"
 ]
 
@@ -122,6 +127,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Redirect urls to slash appended endpoint
+APPEND_SLASH = True
 
 # Custom user model
 AUTH_USER_MODEL = 'account.UserAccount'
