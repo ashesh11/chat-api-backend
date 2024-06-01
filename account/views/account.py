@@ -1,12 +1,10 @@
-import jwt
-
-from django.conf import settings
 from django.contrib.auth import authenticate
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from account.services.account import UserAccountServices
+from account.services.token import BlacklistTokenServices
 from account.serializers import UserSignupSerializer, UserLoginSerializer
 from account.utils import generate_access_token, generate_refresh_token
 
@@ -48,3 +46,12 @@ class UserLoginView(APIView):
         response.set_cookie(key="refreshtoken", value=refresh_token, httponly=True)
 
         return response
+    
+
+class UserLogoutView(APIView):
+    def post(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[-1]
+        _, errors = BlacklistTokenServices.add_to_blacklist(token)
+        if errors:
+            return Response(data=errors, status=400)
+        return Response(data={"data": "User logged out"})
