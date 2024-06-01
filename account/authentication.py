@@ -5,7 +5,8 @@ from django.conf import settings
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 
-from account.services import UserAccountServices
+from account.services.account import UserAccountServices
+from account.services.token import BlacklistTokenServices
 
 
 class AccountJWTAuthentication(BaseAuthentication):
@@ -32,13 +33,15 @@ class AccountJWTAuthentication(BaseAuthentication):
         
         except jwt.InvalidSignatureError:
             raise exceptions.ValidationError({"errors": "Invalid access token"})
+        
+        _, errors = BlacklistTokenServices.check_if_blacklisted(token=access_token)
+        
+        if errors:
+            raise exceptions.PermissionDenied(errors)
 
         user, errors = UserAccountServices.retrieve_active_user(user_id=payload.get('user_id'))
 
         if errors:
             exceptions.PermissionDenied(errors)
         
-        if not user.is_active:
-            raise exceptions.PermissionDenied('User is inactive')
-
         return(user, None)
