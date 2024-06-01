@@ -1,12 +1,12 @@
 import jwt
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 
-User = get_user_model()
+from account.services import UserAccountServices
+
 
 class AccountJWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
@@ -28,16 +28,15 @@ class AccountJWTAuthentication(BaseAuthentication):
             )
         
         except jwt.exceptions.ExpiredSignatureError:
-            raise exceptions.PermissionDenied('Expired Signature')
+            raise exceptions.PermissionDenied({"errors": "Access token validity period expired"})
         
         except jwt.InvalidSignatureError:
-            raise exceptions.ValidationError('Invalid Signature')
+            raise exceptions.ValidationError({"errors": "Invalid access token"})
 
-        
-        user = User.objects.filter(id=payload['user_id']).first()
+        user, errors = UserAccountServices.retrieve_active_user(user_id=payload.get('user_id'))
 
-        if user is None:
-            raise exceptions.NotFound('User not found')
+        if errors:
+            exceptions.PermissionDenied(errors)
         
         if not user.is_active:
             raise exceptions.PermissionDenied('User is inactive')

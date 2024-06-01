@@ -11,3 +11,14 @@ class UserAccountServices:
             return account, None
         except Exception as e:
             return None, {"errors": f"User account creation failed. {e}"}
+        
+    @staticmethod
+    def retrieve_active_user(user_id):
+    # Takes user_id as input and returns that user if active.
+        try:
+            user = UserAccount.objects.get(id=user_id, is_active=True)
+            if not user:
+                return None, {"errors": "User not found"}
+            return user, None
+        except Exception as e:
+            return None, {"errors": f"User retrieval failed. {e}"}
