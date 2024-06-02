@@ -51,7 +51,7 @@ class UserLoginView(APIView):
 class UserLogoutView(APIView):
     def post(self, request):
         token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[-1]
-        _, errors = BlacklistTokenServices.add_to_blacklist(token)
-        if errors:
-            return Response(data=errors, status=400)
+        _, error = BlacklistTokenServices.add_to_blacklist(token)
+        if error:
+            return Response(data=error, status=400)
         return Response(data={"data": "User logged out"})
