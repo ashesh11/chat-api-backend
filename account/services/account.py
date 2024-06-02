@@ -14,7 +14,7 @@ class UserAccountServices:
         
     @staticmethod
     def list_active_users():
-    # Returns list f active users.
+    # Returns list of active users.
         try:
             user = UserAccount.objects.filter(is_active=True)
             if not user:
