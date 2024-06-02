@@ -13,6 +13,17 @@ class UserAccountServices:
             return None, {"error": f"User account creation failed. {e}"}
         
     @staticmethod
+    def list_active_users():
+    # Returns list f active users.
+        try:
+            user = UserAccount.objects.filter(is_active=True)
+            if not user:
+                return None, {"error": "No active user"}
+            return user, None
+        except Exception as e:
+            return None, {"error": f"User listing failed. {e}"}
+        
+    @staticmethod
     def retrieve_active_user(user_id):
     # Takes user_id as input and returns that user if active.
         try:
