@@ -15,12 +15,12 @@ class ChatView(APIView):
 
         chat, error = ChatServices.retrieve(data=serializer.validated_data)
         if error:
-            return Response(data={"data": error}, status=400)
+            return Response(data=error, status=400)
         
         if not chat:
-            _, error = ChatServices.create(data=serializer.validated_data)
+            chat, error = ChatServices.create(data=serializer.validated_data)
             if error:
-                return Response(data={"data": error}, status=400)
+                return Response(data=error, status=400)
         
         serializer = ChatDetailSerializer(chat)
             
