@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from chat.serializers import ChatCreateSerializer, ChatDetailSerializer
 from chat.services import ChatServices
 
-class ChatView(APIView): 
+
+class ChatListView(APIView): 
     def post(self, request):
         data = request.data
         data['user1_id'] = request.user.id
-        print(data)
 
         serializer = ChatCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -25,11 +25,3 @@ class ChatView(APIView):
         serializer = ChatDetailSerializer(chat)
             
         return Response(data={"data": serializer.data}, status=200)
-
-
-class MessageView(APIView):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
