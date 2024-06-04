@@ -65,7 +65,7 @@ class UserAccountListView(APIView):
         if error:
             return Response(data=error, status=400)
         
-        # Exckuding self in the chat list
+        # Excluding self in the chat list
         accounts = accounts.exclude(id=request.user.id)
 
         serializer = UserListSerializer(accounts, many=True)

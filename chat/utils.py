@@ -37,7 +37,7 @@ class ChatSocketTools:
         messages = Message.objects.filter(chat_id=chat_id).order_by('timestamp')
         conversation = []
         for message in messages:
-            conversation.append({f'{message.sender}': message.content})
+            conversation.append({"user": message.sender.email, "message": message.content})
         return conversation, None
     
     def add_message(self, data):
