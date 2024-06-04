@@ -34,6 +34,9 @@ class AccountJWTAuthentication(BaseAuthentication):
         except jwt.InvalidSignatureError:
             raise exceptions.ValidationError({"error": "Invalid access token"})
         
+        except jwt.exceptions.DecodeError:
+            raise exceptions.PermissionDenied({"error": "Invalid access token. Not enough segments"})
+        
         _, errors = BlacklistTokenServices.check_if_blacklisted(token=access_token)
         
         if errors:
