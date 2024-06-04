@@ -1,4 +1,3 @@
-import sys
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -11,7 +10,6 @@ def handle_errors(self, text_data):
     self.accept()
     self.send(text_data=json.dumps(text_data))
     self.close()
-    sys.exit(1)
 
 class ChatMessageConsumer(WebsocketConsumer):
     def connect(self):
@@ -21,23 +19,24 @@ class ChatMessageConsumer(WebsocketConsumer):
         if not self.tools.verify_users():
             handle_errors(self, {'error': 'unverified users'})
 
-        self.chat, error = self.tools.get_or_create_chat()
-        if error:
-            handle_errors(self, error)
+        else:
+            self.chat, error = self.tools.get_or_create_chat()
+            if error:
+                handle_errors(self, error)
 
-        self.chatroom_name = self.chat.id
+            self.chatroom_name = self.chat.id
 
-        conversation, error = self.tools.retrieve_chat_conversation(chat_id=self.chat.id)
-        if error:
-            handle_errors(self, error)
+            conversation, error = self.tools.retrieve_chat_conversation(chat_id=self.chat.id)
+            if error:
+                handle_errors(self, error)
 
-        # Creating a chatroom for two users to send messages
-        async_to_sync(self.channel_layer.group_add)(
-            f'chatroom{self.chat.id}', self.channel_name
-        )
+            # Creating a chatroom for two users to send messages
+            async_to_sync(self.channel_layer.group_add)(
+                f'chatroom{self.chat.id}', self.channel_name
+            )
 
-        self.accept()
-        self.send(text_data=json.dumps(conversation))
+            self.accept()
+            self.send(text_data=json.dumps(conversation))
 
 
     def receive(self, text_data):
@@ -58,5 +57,7 @@ class ChatMessageConsumer(WebsocketConsumer):
 
     def message_handler(self, data):
         chat_id = data['chat_id']
-        conversation = self.tools.retrieve_chat_conversation(chat_id)
+        conversation, error = self.tools.retrieve_chat_conversation(chat_id)
+        if error:
+            handle_errors(self, error)
         self.send(text_data=json.dumps(conversation))
