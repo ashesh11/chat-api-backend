@@ -27,6 +27,7 @@ class ChatServices:
             return None, error
         
         try:
+            # Checking possible case for chat being already created by user1 or user2.
             chat = Chat.objects.filter(Q(user1=user1_id , user2=user2_id) | Q(user1=user2_id , user2=user1_id)).first()
             if not chat:
                 return None, None
