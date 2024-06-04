@@ -1,6 +1,7 @@
 import pytest
 from tests.utils import *
 from account.views.account import UserSignupView, UserLoginView
+from unittest.mock import patch
 
 
 @pytest.fixture
@@ -30,20 +31,33 @@ def test_user_signup_view(user_signup_view, email, password, status):
         assert response.data['data']['password']
 
 
+
 @pytest.fixture
 def user_login_view():
     view = UserLoginView()
     return view
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
-    'email, password, status',
+    "email, password, status",
     [
-        ('test@test.com', 'test', 202)
+        ('test@test.com', 'test', 202),
+        ('test', 'test', 400)
     ]
 )
-def test_user_login_view(user_login_view, email, password, status):
-    data = {'email': email, 'password': password}
-    request = httprequest_for_login(method='POST', data=data)
+@patch('account.views.account.authenticate')
+@pytest.mark.django_db
+def test_user_login_view(mock_authenticate, user_login_view, email, password, status):
+    # Mocking
+    mock_authenticate.return_value = EmailSignupFactory(email='test@test.com', password='test')
+    
+    # Create request
+    request = httprequest_for_login('POST', {'email': email, 'password': password})
+    
+    # Call the view
     response = user_login_view.post(request)
+    
+    # Assertions
     assert response.status_code == status
+    if status == 202:
+        assert response.data['data']['access_token']
+        assert response.data['data']['refresh_token']

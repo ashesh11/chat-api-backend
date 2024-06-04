@@ -9,7 +9,6 @@ def httprequest_for_signup(method, data=None):
     return request
 
 def httprequest_for_login(method, data=None):
-    EmailSignupFactory()
     request = HttpRequest()
     request.method = method
     request.data = data
