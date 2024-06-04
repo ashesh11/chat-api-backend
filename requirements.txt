@@ -14,6 +14,8 @@ daphne==4.1.2
 Django==5.0.6
 djangorestframework==3.15.1
 exceptiongroup==1.2.1
+factory-boy==3.3.0
+Faker==25.4.0
 hyperlink==21.0.0
 idna==3.7
 incremental==22.10.0
@@ -28,6 +30,7 @@ PyJWT==2.8.0
 pyOpenSSL==24.1.0
 pytest==8.2.2
 pytest-django==4.8.0
+python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 redis==5.0.4
 service-identity==24.1.0

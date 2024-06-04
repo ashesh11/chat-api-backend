@@ -15,7 +15,8 @@ class UserSignupView(APIView):
 
     def post(self, request):
         serializer = UserSignupSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(data={'erros': serializer.errors}, status=400)
         account, errors = UserAccountServices.create(serializer.validated_data)
         if errors:
             return Response(data=errors, status=400)
@@ -33,7 +34,8 @@ class UserLoginView(APIView):
         Also adds refresh token in cookie.
         """
         serialier = UserLoginSerializer(data=request.data)
-        serialier.is_valid(raise_exception=True)
+        if not serialier.is_valid():
+            return Response(data={'errors': serialier.errors}, status=400)
         account = authenticate(request, **serialier.validated_data)
         if not account:
             return Response(data={"errors": "Unable to login. Invalid credentials."}, status=400)
