@@ -18,7 +18,7 @@ def authenticated_client(api_client):
     # Sign Up using test user credentials
     signup_credentials = {
         "email": "test@user.com",
-        "password": "testuser"
+        "password": "test"
     }
     url = reverse('user-signup')
     api_client.post(url, data=signup_credentials)
@@ -26,7 +26,7 @@ def authenticated_client(api_client):
     # Login using test user
     login_credentials = {
         "email": "test@user.com",
-        "password": "testuser"
+        "password": "test"
     }
     url = reverse('user-login')
     response = api_client.post(url, data=login_credentials)
