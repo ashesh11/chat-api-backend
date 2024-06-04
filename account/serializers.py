@@ -9,3 +9,8 @@ class UserSignupSerializer(serializers.Serializer):
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+
+class UserListSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    email = serializers.CharField()

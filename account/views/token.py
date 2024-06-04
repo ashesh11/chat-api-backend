@@ -36,10 +36,10 @@ class RefreshTokenView(APIView):
             return Response(data={"errors": "Invalid refresh token"}, status=400)
         
         # Retrieve the user associated with the refresh token
-        user, errors = UserAccountServices.retrieve_active_user(user_id=payload.get("user_id"))
+        user, error = UserAccountServices.retrieve_active_user(user_id=payload.get("user_id"))
 
-        if errors:
-            return Response(data=errors, status=404)
+        if error:
+            return Response(data=error, status=404)
 
         # Generate a new access token and return it in the response
         access_token = generate_access_token(user)

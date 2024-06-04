@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from account.services.account import UserAccountServices
 from account.services.token import BlacklistTokenServices
-from account.serializers import UserSignupSerializer, UserLoginSerializer
+from account.serializers import UserSignupSerializer, UserLoginSerializer, UserListSerializer
 from account.utils import generate_access_token, generate_refresh_token
 
 
@@ -51,7 +51,20 @@ class UserLoginView(APIView):
 class UserLogoutView(APIView):
     def post(self, request):
         token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[-1]
-        _, errors = BlacklistTokenServices.add_to_blacklist(token)
-        if errors:
-            return Response(data=errors, status=400)
+        _, error = BlacklistTokenServices.add_to_blacklist(token)
+        if error:
+            return Response(data=error, status=400)
         return Response(data={"data": "User logged out"})
+    
+
+class UserAccountListView(APIView):
+    def get(self, request):
+        accounts, error = UserAccountServices.list_active_users()
+        if error:
+            return Response(data=error, status=400)
+        
+        # Exckuding self in the chat list
+        accounts = accounts.exclude(id=request.user.id)
+
+        serializer = UserListSerializer(accounts, many=True)
+        return Response(data={"data": serializer.data})

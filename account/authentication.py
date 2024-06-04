@@ -20,7 +20,7 @@ class AccountJWTAuthentication(BaseAuthentication):
         authorization_header = request.headers.get('Authorization')
 
         if authorization_header is None:
-            raise exceptions.PermissionDenied('No authorization header')
+            raise exceptions.PermissionDenied({"error": "No authorization header"})
         
         try:
             access_token = authorization_header.split(" ")[1]
@@ -29,10 +29,10 @@ class AccountJWTAuthentication(BaseAuthentication):
             )
         
         except jwt.exceptions.ExpiredSignatureError:
-            raise exceptions.PermissionDenied({"errors": "Access token validity period expired"})
+            raise exceptions.PermissionDenied({"error": "Access token validity period expired"})
         
         except jwt.InvalidSignatureError:
-            raise exceptions.ValidationError({"errors": "Invalid access token"})
+            raise exceptions.ValidationError({"error": "Invalid access token"})
         
         _, errors = BlacklistTokenServices.check_if_blacklisted(token=access_token)
         
